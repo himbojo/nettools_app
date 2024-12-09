@@ -1,11 +1,11 @@
 # **Net Tools App**
 
-Net Tools App is a web-based utility that provides tools like `ping` and `dig` for network diagnostics. The app features real-time command output streaming and a sleek dark mode UI for a modern user experience.
+Net Tools App is a web-based utility that provides tools like `ping`, `dig` and `traceroute` for network diagnostics. The app features real-time command output streaming and a sleek dark mode UI for a modern user experience.
 
 ---
 
 ## **Features**
-- Perform `ping` and `dig` commands through a web interface.
+- Perform `ping`, `dig` and `traceroute` commands through a web interface.
 - Real-time streaming of command output.
 - Dark mode UI with a responsive design.
 - Dockerized for easy deployment.
@@ -104,13 +104,17 @@ docker rm net-tools-app
   dig A <hostname>
   dig -x <IP>  # For reverse DNS lookup
   ```
+- **Traceroute**: Perform a `traceroute` with a maximum number of hops (default: 30):
+  ```
+  traceroute -m <max_hops> <hostname>
+  ```
 
 ---
 
 ## **Technical Notes**
-- The application streams output line-by-line from the backend to the frontend using Flask-SocketIO.
 - Input is validated to prevent command injection.
 - Reverse DNS lookup uses the `-x` flag for the `dig` command.
+- `Traceroute` functionality allows customization of the maximum number of hops.
 
 ---
 
