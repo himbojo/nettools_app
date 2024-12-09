@@ -32,3 +32,12 @@ def run_dig(hostname, record_type):
         )
     return result.stdout
 
+def run_traceroute(hostname, max_hops):
+    result = subprocess.run(
+        ['traceroute', '-m', str(max_hops), hostname],
+        capture_output=True,
+        text=True
+    )
+    return result.stdout
+
+

@@ -209,6 +209,8 @@
                 <div class="list-group">
                     <a href="#" class="list-group-item list-group-item-action active" id="ping-tab">Ping</a>
                     <a href="#" class="list-group-item list-group-item-action" id="dig-tab">Dig</a>
+                    <a href="#" class="list-group-item list-group-item-action" id="traceroute-tab">Traceroute</a>
+
                 </div>
             </div>
             <!-- Content -->
@@ -248,6 +250,21 @@
                             <button type="submit" class="btn btn-primary w-100">Lookup</button>
                         </form>
                     </div>
+
+                    <!-- Traceroute Form -->
+                    <div id="traceroute-form" style="display: none;">
+                        <h4>Traceroute</h4>
+                        <form>
+                            <div class="mb-3">
+                                <input type="text" class="form-control" placeholder="Enter Hostname or IP" id="traceroute-hostname">
+                            </div>
+                            <div class="mb-3">
+                                <input type="number" class="form-control" placeholder="Max Hops (default: 30)" id="traceroute-max-hops" max="30">
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">Trace</button>
+                        </form>
+                    </div>
+                    
                 </div>
 
                 <!-- Output Section -->
@@ -281,19 +298,32 @@
         }
 
         // Tab switching logic
-        document.getElementById('ping-tab').addEventListener('click', () => {
-            document.getElementById('ping-tab').classList.add('active');
-            document.getElementById('dig-tab').classList.remove('active');
-            document.getElementById('ping-form').style.display = 'block';
-            document.getElementById('dig-form').style.display = 'none';
-        });
+    document.getElementById('ping-tab').addEventListener('click', () => {
+        document.getElementById('ping-tab').classList.add('active');
+        document.getElementById('dig-tab').classList.remove('active');
+        document.getElementById('traceroute-tab').classList.remove('active');
+        document.getElementById('ping-form').style.display = 'block';
+        document.getElementById('dig-form').style.display = 'none';
+        document.getElementById('traceroute-form').style.display = 'none';
+    });
 
-        document.getElementById('dig-tab').addEventListener('click', () => {
-            document.getElementById('dig-tab').classList.add('active');
-            document.getElementById('ping-tab').classList.remove('active');
-            document.getElementById('dig-form').style.display = 'block';
-            document.getElementById('ping-form').style.display = 'none';
-        });
+    document.getElementById('dig-tab').addEventListener('click', () => {
+        document.getElementById('dig-tab').classList.add('active');
+        document.getElementById('ping-tab').classList.remove('active');
+        document.getElementById('traceroute-tab').classList.remove('active');
+        document.getElementById('dig-form').style.display = 'block';
+        document.getElementById('ping-form').style.display = 'none';
+        document.getElementById('traceroute-form').style.display = 'none';
+    });
+
+    document.getElementById('traceroute-tab').addEventListener('click', () => {
+        document.getElementById('traceroute-tab').classList.add('active');
+        document.getElementById('ping-tab').classList.remove('active');
+        document.getElementById('dig-tab').classList.remove('active');
+        document.getElementById('traceroute-form').style.display = 'block';
+        document.getElementById('ping-form').style.display = 'none';
+        document.getElementById('dig-form').style.display = 'none';
+    });
 
         // Handle Ping form submission
         document.querySelector('#ping-form form').addEventListener('submit', (e) => {
@@ -322,6 +352,20 @@
             // Emit socket command
             socket.emit('run_command', { command: 'dig', hostname, options: { record } });
         });
+
+         // Handle Traceroute form submission
+    document.querySelector('#traceroute-form form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const hostname = document.getElementById('traceroute-hostname').value;
+        const maxHops = document.getElementById('traceroute-max-hops').value || 30;
+
+        // Clear previous output and show spinner
+        outputDiv.textContent = '';
+            showSpinner();
+
+        // Emit the traceroute command
+        socket.emit('run_command', { command: 'traceroute', hostname, options: { max_hops: maxHops } });
+    });
 
         // Function to copy content of the output box to the clipboard
         function copyOutput() {

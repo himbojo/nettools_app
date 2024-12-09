@@ -1,6 +1,6 @@
 from flask import render_template
 from flask_socketio import emit
-from .utils import validate_hostname, run_ping, run_dig
+from .utils import validate_hostname, run_ping, run_dig, run_traceroute
 from . import socketio
 
 def init_routes(app):
@@ -30,6 +30,10 @@ def init_routes(app):
                 else:
                     equivalent_command = f"dig {record} {hostname}"
                 output = f"$ {equivalent_command}\n" + run_dig(hostname, record)
+            elif command == 'traceroute':
+                max_hops = options.get('max_hops', 30)
+                equivalent_command = f"traceroute -m {max_hops} {hostname}"
+                output = f"$ {equivalent_command}\n" + run_traceroute(hostname, max_hops)
             else:
                 output = "Unsupported command."
 
